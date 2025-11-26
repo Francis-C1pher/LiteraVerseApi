@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LiteraVerseApi.DAL;
 using LiteraVerseApi.Models;
+using LiteraVerseApi.DTOs;
 
 namespace LiteraVerseApi.Controllers
 {
@@ -22,33 +23,51 @@ namespace LiteraVerseApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuarios>>> GetUsuarios()
+        public async Task<ActionResult<IEnumerable<UsuarioResponse>>> GetUsuarios()
         {
-            return await _context.Usuarios.ToListAsync();
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Usuarios>> GetUsuarios(int id)
-        {
-            var usuarios = await _context.Usuarios.FindAsync(id);
-
-            if (usuarios == null)
-            {
-                return NotFound();
-            }
+            var usuarios = await _context.Usuarios
+                .Select(u => new UsuarioResponse
+                {
+                    UsuarioId = u.UsuarioId,
+                    UserName = u.UserName
+                })
+                .ToListAsync();
 
             return usuarios;
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuarios(int id, Usuarios usuarios)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UsuarioResponse>> GetUsuarios(int id)
         {
-            if (id != usuarios.UsuarioId)
+            var usuario = await _context.Usuarios.FindAsync(id);
+
+            if (usuario == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(usuarios).State = EntityState.Modified;
+            var response = new UsuarioResponse
+            {
+                UsuarioId = usuario.UsuarioId,
+                UserName = usuario.UserName
+            };
+
+            return response;
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUsuarios(int id, UsuarioRequest usuarioRequest)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            usuario.UserName = usuarioRequest.UserName;
+
+            _context.Entry(usuario).State = EntityState.Modified;
 
             try
             {
@@ -69,13 +88,19 @@ namespace LiteraVerseApi.Controllers
             return NoContent();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Usuarios>> PostUsuarios(Usuarios usuarios)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUsuarios(int id)
         {
-            _context.Usuarios.Add(usuarios);
+            var usuarios = await _context.Usuarios.FindAsync(id);
+            if (usuarios == null)
+            {
+                return NotFound();
+            }
+
+            _context.Usuarios.Remove(usuarios);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUsuarios", new { id = usuarios.UsuarioId }, usuarios);
+            return NoContent();
         }
 
         private bool UsuariosExists(int id)

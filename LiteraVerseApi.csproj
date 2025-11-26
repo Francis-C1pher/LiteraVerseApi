@@ -26,12 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="DTOs\" />
   </ItemGroup>
-	<ItemGroup>
-		<None Update="Data\LiteraVerse.db">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
 
 </Project>
