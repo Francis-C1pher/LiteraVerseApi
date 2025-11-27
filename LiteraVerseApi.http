@@ -1,0 +1,6 @@
+@LiteraVerseApi_HostAddress = http://localhost:5115
+
+GET {{LiteraVerseApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
