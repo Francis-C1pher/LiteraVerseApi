@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiteraVerseApi.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20251126040441_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251127181918_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
